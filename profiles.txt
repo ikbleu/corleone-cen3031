@@ -1,0 +1,14 @@
+3 normal3 Citizen:Town,Citizen:Town, Mafia:MafiaTeam
+3 vanilla3 Doctor:Town,Cop:Town,Mafia:MafiaTeam
+3 testjest Doctor:Town,Mafia:MafiaTeam,Jester:JesterTeam
+3 testjest2 Jester:JesterTeam,Jester:JesterTeam,Mafia:MafiaTeam
+3 testvil Doctor:Town,Mafia:MafiaTeam,Vigilante:Town
+4 normal4 Citizen:Town,Citizen:Town,Citizen:Town,Mafia:MafiaTeam
+4 vanilla4 Citizen:Town,Doctor:Town,Cop:Town,Mafia:MafiaTeam
+4 jest4 Citizen:Town,Doctor:Town,Cop:Town,Mafia:MafiaTeam,Jester:JesterTeam
+4 vigil4 Citizen:Town,Doctor:Town,Cop:Town,Mafia:MafiaTeam,Vigilante:Town
+5 normal5 Citizen:Town,Citizen:Town,Citizen:Town,Mafia:MafiaTeam,Citizen:Town
+5 vanilla5 Citizen:Town,Citizen:Town,Doctor:Town,Cop:Town,Mafia:MafiaTeam
+5 momafia5 Citizen:Town,Doctor:Town,Cop:Town,Mafia:MafiaTeam,Mafia:MafiaTeam
+6 normal6 Citizen:Town,Citizen:Town,Citizen:Town,Mafia:MafiaTeam,Citizen:Town,Mafia:MafiaTeam
+6 vanilla6 Citizen:Town,Citizen:Town,Doctor:Town,Cop:Town,Mafia:MafiaTeam,Mafia:MafiaTeam
