@@ -1,0 +1,29 @@
+<project name="corleone">
+	<target name="clean" description="Removes old class and jar files">
+		<delete dir="bin"/>
+		<delete dir="dist"/>
+	</target>
+
+	<target name="compile" description="Compiles the source code">
+		<mkdir dir="bin"/>
+		<javac srcdir="src" destdir="bin"/>
+	</target>
+
+	<target name="jar" description="Creates the jar file from the compiled source" depends="compile" >
+		<mkdir dir="dist"/>
+		<jar destfile="dist/corleone.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.googlecode.prmf.corleone.Main"/>
+			</manifest>
+			<fileset dir="bin"/>
+		</jar>
+	</target>
+
+	<target name="run" description="Runs the jar file" depends="jar" >
+		<copy file="profiles.txt" tofile="dist/profiles.txt"/>
+		<copy file="settings.txt" tofile="dist/settings.txt"/>
+		<java jar="dist/corleone.jar" fork="true"/>
+	</target>
+
+</project>
+
