@@ -1,0 +1,5 @@
+#If this settings file doesn't seem to work, then try placing a copy in the same dir as build.xml when testing
+nick = NameGoesHere
+channel = ##corleone
+server = irc.freenode.net
+port = 8001
