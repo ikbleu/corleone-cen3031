@@ -1,0 +1,2 @@
+MafiaTeam: 2
+Town: 1
