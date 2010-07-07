@@ -59,6 +59,19 @@ public class MafiaListener implements Listener {
 			game.receiveMessage(":" + user + "! PRIVMSG " + inputThread.getChannel() + " :~join"); // TODO H4X is bad
 
 		}
+		else if(msg.length >= 4 && msg[3].equals(":~opt1") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~opt2") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~opt3") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		
 		else if(msg.length >= 4 && msg[3].equals(":~stats") && game != null)
 		{
 			game.getState().status();

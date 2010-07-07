@@ -18,11 +18,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.googlecode.prmf.corleone.connection.IOThread;
 import com.googlecode.prmf.corleone.game.Game;
 import com.googlecode.prmf.corleone.game.Player;
 import com.googlecode.prmf.corleone.game.role.Citizen;
+import com.googlecode.prmf.corleone.game.role.Cop;
 import com.googlecode.prmf.corleone.game.role.Doctor;
 import com.googlecode.prmf.corleone.game.role.Mafia;
 import com.googlecode.prmf.corleone.game.role.Role;
@@ -46,7 +48,8 @@ public class Pregame implements MafiaGameState {
 	private List<Role> roles;
 	private IOThread inputOutputThread;
 	private boolean dayStart;
-
+	private int setupOp=0;//new
+	
 	public Pregame(String startName, IOThread inputOutputThread) {
 		this();
 		this.startName = startName;
@@ -105,8 +108,9 @@ public class Pregame implements MafiaGameState {
 		//then we can catch class not found exceptions with a message telling user to see ~help or something
 		if(command.equalsIgnoreCase(":~start"))
 		{
-			endState = true;
-			action = new StartAction(user, game);
+			startGame();
+			//endState = true;
+			//action = new StartAction(user, game);
 		}
 		if(command.equalsIgnoreCase(":~join"))
 		{
@@ -116,6 +120,28 @@ public class Pregame implements MafiaGameState {
 		if(command.equalsIgnoreCase(":~quit"))
 		{
 			action = new QuitAction(user, game);
+
+		}
+		
+		if(command.equalsIgnoreCase(":~opt1"))//new
+		{
+			setupOp=1;
+			endState = true;
+			action = new StartAction(user, game);
+
+		}
+		if(command.equalsIgnoreCase(":~opt2"))//new
+		{
+			setupOp=2;
+			endState = true;
+			action = new StartAction(user, game);
+
+		}
+		if(command.equalsIgnoreCase(":~opt3"))//new
+		{
+			setupOp=3;
+			endState = true;
+			action = new StartAction(user, game);
 
 		}
 
@@ -137,15 +163,38 @@ public class Pregame implements MafiaGameState {
 		}
 	}*/
 
-	private void startGame(Game game)
+	//private void startGame(Game game)
+	private void startGame()
 	{
-		game.setProgress(true);
+		//game.setProgress(true);
 		if(!profileLoaded)
 		{
-			defaultStart();
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Please choose a game setup option:");
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Option1: 1/4 Mafia, 1 Doctor, 1 Vigilante (type ~opt1)");
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Option2: 1/4 Mafia, 1 Doctor, 1 Cop (type ~opt2)");
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Option3: 1/4 Mafia, 1 Jester, 1 Cop (type ~opt3)");
+				
+			
+		/*	message = message.toLowerCase(Locale.ENGLISH);
+			if(message.substring(1).startsWith("option1"))
+			{
+				defaultStart();
+			}
+			if(message.substring(1).startsWith("option2"))	
+			{
+				secondStart();
+			}*/
 			return;
 		}
-
+	}
+	private void start2(Game game){
+		game.setProgress(true);
+		if(setupOp==1)
+			defaultStart();
+		if(setupOp==2)
+			secondStart();
+		if(setupOp==3)
+			thirdStart();
 		Collections.shuffle(roles);
 
 		// TODO the following would be slicker with two iterators
@@ -170,6 +219,79 @@ public class Pregame implements MafiaGameState {
 		}
 
 		townRoles.add(new Vigilante(town));
+		townRoles.add(new Doctor(town));
+		//create the Town team
+		for(int a = 0; a < (players.size() - numMafia-2); ++a)
+		{
+			townRoles.add(new Citizen(town));
+		}
+		roles.addAll(mafiaRoles);
+		roles.addAll(townRoles);
+
+		Collections.shuffle(roles);
+
+		// TODO code duplication for the lose
+		for(int a = 0; a < players.size(); ++a)
+		{
+			Player p = players.get(a);
+
+			p.setRole(roles.get(a));
+			p.getRole().getTeam().addPlayer(p); //this seems kinda sloppy, any better way of doing this?
+			//yes, do it from within setRole()
+
+		}
+		for (Player p : players)
+		{
+			inputOutputThread.sendMessage(p.getName(), p.getRole().description());
+		}
+	}
+	private void secondStart()
+	{
+		int numMafia = (int)Math.ceil(players.size()/4.0);
+
+		for(int a = 0; a < numMafia; ++a)
+		{
+			mafiaRoles.add(new Mafia(mafiaTeam));
+		}
+
+		townRoles.add(new Cop(town));
+		townRoles.add(new Doctor(town));
+		//create the Town team
+		for(int a = 0; a < (players.size() - numMafia-2); ++a)
+		{
+			townRoles.add(new Citizen(town));
+		}
+		roles.addAll(mafiaRoles);
+		roles.addAll(townRoles);
+
+		Collections.shuffle(roles);
+
+		// TODO code duplication for the lose
+		for(int a = 0; a < players.size(); ++a)
+		{
+			Player p = players.get(a);
+
+			p.setRole(roles.get(a));
+			p.getRole().getTeam().addPlayer(p); //this seems kinda sloppy, any better way of doing this?
+			//yes, do it from within setRole()
+
+		}
+		for (Player p : players)
+		{
+			inputOutputThread.sendMessage(p.getName(), p.getRole().description());
+		}
+	}
+	
+	private void thirdStart()
+	{
+		int numMafia = (int)Math.ceil(players.size()/4.0);
+
+		for(int a = 0; a < numMafia; ++a)
+		{
+			mafiaRoles.add(new Mafia(mafiaTeam));
+		}
+
+		townRoles.add(new Cop(town));
 		townRoles.add(new Doctor(town));
 		//create the Town team
 		for(int a = 0; a < (players.size() - numMafia-2); ++a)
@@ -368,7 +490,8 @@ public class Pregame implements MafiaGameState {
 			if(name.equals(startName))
 			{
 				inputOutputThread.sendMessage(game.getIOThread().getChannel(), "The game has begun!");
-				startGame(game);
+				//startGame(game);
+				start2(game);
 				//TODO: maybe move this, and the changes at the end of the day/night, to the appropriate constructors?
 				//that way we won't have any extraneous chances after the end of the game, plus we can put it
 				//in two places only instead of 3 ^_^
