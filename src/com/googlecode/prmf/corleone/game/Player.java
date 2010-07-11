@@ -15,6 +15,7 @@
 package com.googlecode.prmf.corleone.game;
 
 import com.googlecode.prmf.corleone.game.role.Role;
+import com.googlecode.prmf.corleone.game.team.Team;
 
 public class Player {
 	public static enum causesOfDeath {
@@ -62,7 +63,19 @@ public class Player {
 	public Role getRole() {
 		return role;
 	}
-
+	
+	// -----------------------------------------------------------------------------------------------------
+	// START YAWDIE INVASION
+	// -----------------------------------------------------------------------------------------------------
+	
+	public Team getTeam() {
+		return role.getTeam();
+	}
+	
+	// -----------------------------------------------------------------------------------------------------
+	// END YAWDIE INVASION
+	// -----------------------------------------------------------------------------------------------------
+	
 	public void setRole(Role role) {
 		this.role = role;
 	}
