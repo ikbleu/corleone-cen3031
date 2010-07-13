@@ -13,7 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>
  */
 package com.googlecode.prmf.corleone.game.state;
-
+import java.lang.System;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +48,10 @@ public class Pregame implements MafiaGameState {
 	private List<Role> roles;
 	private IOThread inputOutputThread;
 	private boolean dayStart;
-	private int setupOp=0;//new
+	private int setupOp=1;//new
+	private int votes1=0, votes2=0, votes3=0;//new
+	private long timer;
+	private boolean setupChosen = false;
 	
 	public Pregame(String startName, IOThread inputOutputThread) {
 		this();
@@ -107,10 +110,17 @@ public class Pregame implements MafiaGameState {
 		//TODO: handle with Class.forName(), although I'm not sure how case sensitivity will work with that? =\
 		//then we can catch class not found exceptions with a message telling user to see ~help or something
 		if(command.equalsIgnoreCase(":~start"))
-		{
-			startGame();
-			//endState = true;
-			//action = new StartAction(user, game);
+		{	
+			if(setupChosen==true&&System.currentTimeMillis()>timer){
+				endState=true;
+				action= new StartAction(user, game);
+			}
+			else if(setupChosen==true&&System.currentTimeMillis()<=timer)
+				inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You must wait the full 15 seconds for votes before starting the game!");
+			else{
+			endState = true;
+			action = new StartAction(user, game);
+			}		
 		}
 		if(command.equalsIgnoreCase(":~join"))
 		{
@@ -122,26 +132,30 @@ public class Pregame implements MafiaGameState {
 			action = new QuitAction(user, game);
 
 		}
-		
+		if(command.equalsIgnoreCase(":~setup"))//new
+		{
+			setupChosen=true;
+			setupMenu();
+		}
 		if(command.equalsIgnoreCase(":~opt1"))//new
 		{
-			setupOp=1;
-			endState = true;
-			action = new StartAction(user, game);
+			//setupOp=1;
+			votes1++;
+			
 
 		}
 		if(command.equalsIgnoreCase(":~opt2"))//new
 		{
-			setupOp=2;
-			endState = true;
-			action = new StartAction(user, game);
+			//setupOp=2;
+			votes2++;
+			
 
 		}
 		if(command.equalsIgnoreCase(":~opt3"))//new
 		{
-			setupOp=3;
-			endState = true;
-			action = new StartAction(user, game);
+			//setupOp=3;
+			votes3++;
+			
 
 		}
 
@@ -164,30 +178,20 @@ public class Pregame implements MafiaGameState {
 	}*/
 
 	//private void startGame(Game game)
-	private void startGame()
+	private void setupMenu()
 	{
 		//game.setProgress(true);
 		if(!profileLoaded)
 		{
-			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Please choose a game setup option:");
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Please choose a game setup option, you have 15 seconds to vote:");
 			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Option1: 1/4 Mafia, 1 Doctor, 1 Vigilante (type ~opt1)");
 			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Option2: 1/4 Mafia, 1 Doctor, 1 Cop (type ~opt2)");
 			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Option3: 1/4 Mafia, 1 Jester, 1 Cop (type ~opt3)");
-				
-			
-		/*	message = message.toLowerCase(Locale.ENGLISH);
-			if(message.substring(1).startsWith("option1"))
-			{
-				defaultStart();
-			}
-			if(message.substring(1).startsWith("option2"))	
-			{
-				secondStart();
-			}*/
+			timer = System.currentTimeMillis()+15000;
 			return;
 		}
 	}
-	private void start2(Game game){
+	private void start(Game game){
 		game.setProgress(true);
 		if(setupOp==1)
 			defaultStart();
@@ -195,18 +199,7 @@ public class Pregame implements MafiaGameState {
 			secondStart();
 		if(setupOp==3)
 			thirdStart();
-		Collections.shuffle(roles);
 
-		// TODO the following would be slicker with two iterators
-		for(int a = 0; a < players.size(); ++a)
-		{
-			Player p = players.get(a);
-
-			p.setRole(roles.get(a));
-			p.getRole().getTeam().addPlayer(p); //this seems kinda sloppy, any better way of doing this?
-			//yes, do it from within setRole()
-			inputOutputThread.sendMessage(players.get(a).getName(), p.getRole().description());
-		}
 	}
 
 	private void defaultStart()
@@ -489,9 +482,15 @@ public class Pregame implements MafiaGameState {
 		{
 			if(name.equals(startName))
 			{
+				if(votes2>votes3&&votes2>votes1)
+					setupOp=2;
+				else if(votes3>votes2&&votes3>votes1)
+					setupOp=3;
+				else
+					setupOp=1;
 				inputOutputThread.sendMessage(game.getIOThread().getChannel(), "The game has begun!");
 				//startGame(game);
-				start2(game);
+				start(game);
 				//TODO: maybe move this, and the changes at the end of the day/night, to the appropriate constructors?
 				//that way we won't have any extraneous chances after the end of the game, plus we can put it
 				//in two places only instead of 3 ^_^

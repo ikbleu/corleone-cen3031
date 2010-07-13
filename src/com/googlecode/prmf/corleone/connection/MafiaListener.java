@@ -113,6 +113,17 @@ public class MafiaListener implements Listener {
 				inputThread.sendMessage("MODE",inputThread.getChannel(), "+m");
 			}
 		}
+		else if(msg.length >= 4 && msg[3].equals(":~setup") && game != null)
+		{
+			if(game.getPlayerList().length < 3)
+			{
+				inputThread.sendMessage(inputThread.getChannel(), "Game should have at least 3 people!");
+			}
+			else
+			{
+				game.receiveMessage(in);
+			}
+		}
 		else if(msg.length >= 4 && msg[3].startsWith(":~lynch") && game != null)
 		{
 			game.receiveMessage(in);
