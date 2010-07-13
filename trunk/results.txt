@@ -1,2 +1,2 @@
-MafiaTeam: 6
-Town: 2
+MafiaTeam: 8
+Town: 5
