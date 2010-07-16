@@ -121,6 +121,10 @@ public class Day implements MafiaGameState {
 		if( command.equals(":~lynch") )
 		{
 			ret = processVote(speakerId, targetId);
+			int tmp = players[speakerId].getlevel() + 1;
+			players[speakerId].setlevel(tmp);
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Congratulations! You have leveled up!");
+			
 		}
 		else if( command.equals(":~nolynch") )
 		{
@@ -130,6 +134,10 @@ public class Day implements MafiaGameState {
 		else if( command.equals(":~unvote") )
 		{
 			ret = processVote(speakerId, -1);
+		}
+		else if (command.equals(":~states"))
+		{
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You are: " + players[speakerId].getName() + " You current have: " + players[speakerId].getitems() + "items and " + players[speakerId].getap() + " action points!");
 		}
 		else if( command.equals(":~quit") )
 		{

@@ -27,6 +27,9 @@ public class Player {
 	private boolean isAlive;
 	private int votedFor;
 	private int nightLives;
+	private int level;
+	private int items;
+	private int actionpoint;
 	private boolean targetted;
 	private causesOfDeath deathCause;
 
@@ -35,6 +38,9 @@ public class Player {
 		isAlive = true;
 		role = null;
 		votedFor = -1;
+		level = 0;
+		items = 3;
+		actionpoint = 240;
 		targetted = false;
 		deathCause = causesOfDeath.NOTDEAD;
 	}
@@ -59,9 +65,39 @@ public class Player {
 	public String getName() {
 		return name;
 	}
+	
+	public int getlevel() 
+	{
+		return level;
+	}
+	
+	public int getitems()
+	{
+		return items;
+	}
 
 	public Role getRole() {
 		return role;
+	}
+	
+	public void setlevel(int lv)
+	{
+		this.level = lv;
+	}
+	
+	public void setitems(int i)
+	{
+		this.items = i;
+	}
+	
+	public int getap()
+	{
+		return actionpoint;
+	}
+	
+	public void setap(int ap)
+	{
+		this.actionpoint = ap;
 	}
 	
 	// -----------------------------------------------------------------------------------------------------
