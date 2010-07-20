@@ -14,7 +14,7 @@ public class timePanel{
 		
       JFrame frame = new JFrame();
       Container cp = frame.getContentPane();
-      timeDurationPanel pane = new timeDurationPanel(frame);
+      timeDurationPanel pane = new timeDurationPanel(frame, 8, 10);
       cp.add(pane.getPanel());
 
       frame.pack();
@@ -31,8 +31,10 @@ class timeDurationPanel
 	JFrame frame;
 	
 	//constructos
-	public timeDurationPanel(JFrame Pframe)
+	public timeDurationPanel(JFrame Pframe, int daytime2, int nighttime2)
 	{
+		dayTime=daytime2;
+		nightTime=nighttime2;
 		frame=Pframe;
 	}
 	//initialize time panel and return it
@@ -46,15 +48,18 @@ class timeDurationPanel
 		tpane.setBackground(Color.white);
 		tpane.setPreferredSize(new Dimension(300, 190));
 		
-		final JSlider daySlider = new JSlider();		
-		daySlider.setBackground(Color.WHITE);			
-		final JLabel dayLabel = new JLabel(Integer.toString(maxDayDuration*daySlider.getValue()/daySlider.getMaximum())+" minutes");
+		final JSlider daySlider = new JSlider();	
+		daySlider.setMinimum(0);
+		daySlider.setMaximum(maxDayDuration);
+		daySlider.setValue(dayTime);		
+		daySlider.setBackground(Color.WHITE);		
+		final JLabel dayLabel = new JLabel(Integer.toString(daySlider.getValue())+" minutes");
 		ChangeListener daySliderListener = new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				if(maxDayDuration*daySlider.getValue()/daySlider.getMaximum()>9)
-					dayLabel.setText(Integer.toString(maxDayDuration*daySlider.getValue()/daySlider.getMaximum())+" minutes");
+				if(daySlider.getValue()>9)
+					dayLabel.setText(Integer.toString(daySlider.getValue())+" minutes");
 				else
-					dayLabel.setText("0"+Integer.toString(maxDayDuration*daySlider.getValue()/daySlider.getMaximum())+" minutes");
+					dayLabel.setText("0"+Integer.toString(daySlider.getValue())+" minutes");
 			}			
 		};		
 		daySlider.addChangeListener(daySliderListener);				
@@ -67,14 +72,17 @@ class timeDurationPanel
 		dayPane.setBackground(Color.white);				
 
 		final JSlider nightSlider = new JSlider();		
+		nightSlider.setMinimum(0);
+		nightSlider.setMaximum(maxNightDuration);
+		nightSlider.setValue(nightTime);	
 		nightSlider.setBackground(Color.WHITE);		
-		final JLabel nightLabel = new JLabel(Integer.toString(maxNightDuration*nightSlider.getValue()/nightSlider.getMaximum())+" minutes");
+		final JLabel nightLabel = new JLabel(Integer.toString(nightSlider.getValue())+" minutes");
 		ChangeListener nightSliderListener = new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				if(maxNightDuration*nightSlider.getValue()/nightSlider.getMaximum()>9)
-					nightLabel.setText(Integer.toString(maxNightDuration*nightSlider.getValue()/nightSlider.getMaximum())+" minutes");
+				if(nightSlider.getValue()>9)
+					nightLabel.setText(Integer.toString(nightSlider.getValue())+" minutes");
 				else
-					nightLabel.setText("0"+Integer.toString(maxNightDuration*nightSlider.getValue()/nightSlider.getMaximum())+" minutes");
+					nightLabel.setText("0"+Integer.toString(nightSlider.getValue())+" minutes");
 			}			
 		};		
 		nightSlider.addChangeListener(nightSliderListener);
@@ -103,8 +111,8 @@ class timeDurationPanel
 		ActionListener ButtonListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{ 	
-				dayTime=maxDayDuration*daySlider.getValue()/daySlider.getMaximum();
-				nightTime=maxNightDuration*nightSlider.getValue()/nightSlider.getMaximum();
+				dayTime=daySlider.getValue();
+				nightTime=nightSlider.getValue();
 				frame.setVisible(false);				
 			}			
 		};
@@ -131,4 +139,14 @@ class timeDurationPanel
 	{
 		return nightTime;
 	}	
+	//get dayTime
+	public void setDayDuration(int time)
+	{
+		dayTime=time;
+	}
+	//get nightTime
+	public void setNightDuration(int time)
+	{
+		nightTime=time;
+	}
 }
