@@ -121,9 +121,15 @@ public class Day implements MafiaGameState {
 		if( command.equals(":~lynch") )
 		{
 			ret = processVote(speakerId, targetId);
-			int tmp = players[speakerId].getlevel() + 1;
-			players[speakerId].setlevel(tmp);
-			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "Congratulations! You have leveled up!");
+			int e = players[speakerId].getexp() + 25;
+			inputOutputThread.sendMessage(players[speakerId].getName(), "You gained 25 exp from this action!");
+			players[speakerId].setexp(e);
+			if(players[speakerId].getexp() >= 100)
+			{	
+			   int tmp = players[speakerId].getlevel() + 1;
+			   players[speakerId].setlevel(tmp);
+			   inputOutputThread.sendMessage(players[speakerId].getName(), "Congratulations! You have leveled up!");
+			}  
 			
 		}
 		else if( command.equals(":~nolynch") )
@@ -137,7 +143,7 @@ public class Day implements MafiaGameState {
 		}
 		else if (command.equals(":~states"))
 		{
-			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You are: " + players[speakerId].getName() + " You current have: " + players[speakerId].getitems() + "items and " + players[speakerId].getap() + " action points!");
+			inputOutputThread.sendMessage(players[speakerId].getName(), "You are: " + players[speakerId].getName() + " You current have: " + players[speakerId].getitems() + "items and " + players[speakerId].getap() + " action points!");
 		}
 		else if( command.equals(":~quit") )
 		{
