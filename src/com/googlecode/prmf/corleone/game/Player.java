@@ -30,6 +30,7 @@ public class Player {
 	private int level;
 	private int items;
 	private int actionpoint;
+	private int exp;
 	private boolean targetted;
 	private causesOfDeath deathCause;
 
@@ -40,7 +41,8 @@ public class Player {
 		votedFor = -1;
 		level = 0;
 		items = 3;
-		actionpoint = 240;
+		exp = 0;
+		actionpoint = 180;
 		targetted = false;
 		deathCause = causesOfDeath.NOTDEAD;
 	}
@@ -98,6 +100,16 @@ public class Player {
 	public void setap(int ap)
 	{
 		this.actionpoint = ap;
+	}
+	
+	public int getexp()
+	{
+		return exp;
+	}
+	
+	public void setexp(int exp)
+	{
+		this.exp = exp;
 	}
 	
 	// -----------------------------------------------------------------------------------------------------
