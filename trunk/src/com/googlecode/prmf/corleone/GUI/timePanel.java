@@ -1,6 +1,6 @@
 //Issam Bouter
 //Time panel for inputing time options for mafia game
-package GUI;
+package com.googlecode.prmf.corleone.GUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
