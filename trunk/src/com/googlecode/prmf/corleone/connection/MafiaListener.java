@@ -99,6 +99,11 @@ public class MafiaListener implements Listener {
 				game.invokeEndState();
 			}
 		}
+		else if(msg.length >= 4 && msg[3].equals(":~scores") && game != null)
+		{
+			//Player[] players = game.getPlayerList();
+			game.getPostgame().generatePlayerScores( true, user );
+		}
 
 		//TODO: why does game not handle all of this? just pass the message IMO
 		else if(msg.length >= 4 && msg[3].equals(":~start") && game != null)
