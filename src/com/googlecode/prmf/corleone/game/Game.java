@@ -36,6 +36,7 @@ public class Game {
 		this.inputOutputThread = inputOutputThread;
 		//TODO: the next two lines should be combined
 		pregame = new Pregame(gameStarter, inputOutputThread);
+		postgame = new Postgame(inputOutputThread, getPlayerList(), false);
 		state = getPregame();
 		timerThread = new TimerThread(inputOutputThread);
 		setProgress(false);
