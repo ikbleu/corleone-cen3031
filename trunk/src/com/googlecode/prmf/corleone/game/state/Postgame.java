@@ -30,11 +30,19 @@ import com.googlecode.prmf.corleone.game.team.Team;
 public class Postgame implements MafiaGameState {
 	public IOThread inputOutputThread;
 	public Player[] players;
+	final private int NUM_PLAYER_RANKINGS_TO_DISPLAY = 25;
 
 	public Postgame(IOThread inputOutputThread, Player[] players) {
 		this.inputOutputThread = inputOutputThread;
 		this.players = players;
 		wrapUp();
+	}
+	
+	public Postgame(IOThread inputOutputThread, Player[] players, Boolean initializer )
+	{
+		// if initializer is passed in, don't call warpUp();
+		this.inputOutputThread = inputOutputThread;
+		this.players = players;
 	}
 
 	public boolean receiveMessage(Game game, String line)
@@ -83,7 +91,7 @@ public class Postgame implements MafiaGameState {
 	// storing winning and losing players in case losing players may factor in later for statistics or
 	// other such reasons.
 	
-	public void generatePlayerScores()
+	public void generatePlayerScores( boolean displayScores, String displayRequester )
 	{System.out.println("ENTERED GENERATEPLAYERSCORES!!!!\n\n\n\n\n");
 		LinkedList< Player > winningPlayers = new LinkedList< Player >();
 		LinkedList< Player > losingPlayers = new LinkedList< Player >();
@@ -102,7 +110,7 @@ public class Postgame implements MafiaGameState {
 				losingPlayers.add( selectedPlayer );
 		}
 		
-		recordWinningPlayerScores( winningPlayers );
+		recordWinningPlayerScores( winningPlayers, displayScores, displayRequester );
 		// need to add sorter that will sort players in accordance to who has highest number of wins
 		// and also how to handle sorting of ties for one position (like 3 people tying for first place,
 		// four for second place, three for third place, etc.)
@@ -113,7 +121,7 @@ public class Postgame implements MafiaGameState {
 	// currently only storing scores in the form of PLAYER_NAME SCORE on separate lines.
 	// I have not yet implemented a sorted ranking of scores (1st place, 2nd place, etc.)
 	// ... and make this method more efficient. seriously.
-	private void recordWinningPlayerScores( LinkedList< Player > winningPlayers )
+	private void recordWinningPlayerScores( LinkedList< Player > winningPlayers, boolean displayScores, String displayRequester )
 	{System.out.println("ENTERED recordWinningPlayerScores()!!!!!!\n\n\n\n");
 		try
 		{
@@ -161,19 +169,52 @@ public class Postgame implements MafiaGameState {
 				}
 			}
 			
+			// sorting (in an absolutely terrible way--fix later) playerScores and
+			// playerNames based on playerScores in descending order
+			for( int i = 0; i < playerScores.size(); ++i )
+			{
+				int currentScore = playerScores.get( i );
+				int switchIndex = i;
+				for( int j = i; j < playerScores.size() - i; ++j )
+				{
+					if( currentScore < playerScores.get( j ) )
+					{
+						switchIndex = j;
+					}
+				}
+				
+				// making the switch in both playerScores and playerNames when
+				// currentScore is less than another score later in the list
+				if( switchIndex != i )
+				{
+					int tempScore = currentScore;
+					String tempName = playerNames.get( i );
+					playerScores.set( i, ( playerScores.get( switchIndex ) ) );
+					playerNames.set( i, ( playerNames.get( switchIndex ) ) );
+					playerScores.set( switchIndex, tempScore );
+					playerNames.set( switchIndex, tempName );
+				}
+			}
+			
+			// displaying the scores if displayScores == true
+			if( displayScores )
+			{
+				displayScores( playerNames, playerScores, displayRequester );
+			}
+			
 			// by this point, playerNames and playerScores contain the up-to-date names and scores
 			// for the scoreboard, ready to be written to the playerScores.txt file on the server.
 			// write the scores to the appropriate file on the server. separate this into a separate method.
 			// you're going to rewrite all the names with their updated corresponding scores.
 			// make it more efficient later.
-			
-			writeWinningPlayerScores( playerNames, playerScores );
+			else
+				writeWinningPlayerScores( playerNames, playerScores );
 		}
 		catch( Exception e )
 		{ e.printStackTrace(); }
 	}
 	
-	// reason for existance: to write the generated player scores, with corresponding usernames,
+	// reason for existence: to write the generated player scores, with corresponding usernames,
 	// to playerScores.txt
 	private void writeWinningPlayerScores( LinkedList< String > playerNames, LinkedList< Integer > playerScores )
 	{System.out.println("ENTERED writeWinningPlayerScores()!!!!!!\n\n\n\n");
@@ -195,7 +236,7 @@ public class Postgame implements MafiaGameState {
 		{ System.out.println("ERROR WRITING PLAYER SCORES \n\n\n\n\n");}
 	}
 	
-	// reason for existance: to get final, accurate count of the number of players due to uncertainties
+	// reason for existence: to get final, accurate count of the number of players due to uncertainties
 	// about player list by the end of the match (like disconnects and the like)
 	private LinkedList< Player > buildFinalPlayerCount()
 	{System.out.println("ENTERED buildFinalPlayerCount()!!!!!!\n\n\n\n");
@@ -223,6 +264,34 @@ public class Postgame implements MafiaGameState {
 			return true;
 		else
 			return false;
+	}
+	
+	// displays scores to the calling player via private message
+	private void displayScores( LinkedList< String > playerNames, LinkedList< Integer > playerScores, String displayRequester )
+	{
+		String[] rankingsDisplay = new String[ NUM_PLAYER_RANKINGS_TO_DISPLAY ];
+		int numPlayers = playerScores.size();
+		for( int i = 0; i < NUM_PLAYER_RANKINGS_TO_DISPLAY; ++i )
+		{
+			if( i < numPlayers )
+			{
+				rankingsDisplay[ i ] = playerScores.get( i ) + " " + playerNames.get( i );
+			}
+			else
+			{
+				rankingsDisplay[ i ] = "";
+			}
+		}
+	
+		inputOutputThread.sendMessage( displayRequester, "-----------------------------------" );
+		inputOutputThread.sendMessage( displayRequester, " Here're the Mafia Rankings, baby!" );
+		inputOutputThread.sendMessage( displayRequester, "-----------------------------------" );
+		
+		for( int i = 0; i < NUM_PLAYER_RANKINGS_TO_DISPLAY; ++i )
+		{
+			if( !rankingsDisplay[ i ].equals( "" ) )
+				inputOutputThread.sendMessage( displayRequester, rankingsDisplay[ i ] );
+		}
 	}
 	
 	// -------------------------------------------------------------------------------------------------------------
@@ -268,7 +337,7 @@ public class Postgame implements MafiaGameState {
 		// START YAWDIE INVASION
 		// ------------------------------------------------------------------------------------------
 		
-		generatePlayerScores();
+		generatePlayerScores( false, "" );
 		
 		// ------------------------------------------------------------------------------------------
 		// END YAWDIE INVASION
