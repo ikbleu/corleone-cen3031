@@ -1,6 +1,6 @@
 //Issam Bouter
 //Front end MAFIA container
-package GUI;
+package com.googlecode.prmf.corleone.GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
