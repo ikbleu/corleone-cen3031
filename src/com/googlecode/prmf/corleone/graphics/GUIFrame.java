@@ -1,6 +1,6 @@
 //Issam Bouter
 //Front end MAFIA container
-package com.googlecode.prmf.corleone.GUI;
+package com.googlecode.prmf.corleone.graphics;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -28,31 +28,48 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
+
 public class GUIFrame 
 {
 	static ActionListener CloseMenuListener, TimeOptionsListener;
 	static Container cp;
-	static JPanel frontPane;
+	static JPanel frontPane, gameTimePane;
 	static timeDurationPanel timepane=null;
 	static int day=0;
+	static int wminutes =0;
+	static int wseconds = 0;
 	static boolean MenuOpen=false;
+	static JLabel gameTimePaneLabel;
+	static JLabel gameTimePaneImage;
 	//initializes frame and all subcomponents of frame, puts the front end on the frame and displays it
 	public static void main(String[] args) 
 	{		
 	      JFrame frame = new JFrame();
-	      frame.setPreferredSize(new Dimension(800, 715));
+	      frame.setPreferredSize(new Dimension(800, 755));
 	      cp = frame.getContentPane();
 	      
 	      initMenuListeners(frame);
 	      addMenu(frame);	      
 	      frontPane = new JPanel();
+	      
+	      initgameTimePane();
 	      addGUI();
 	      addProgressPane();
 	     
 	      cp.add(frontPane);
+	      frame.setTitle("Welcome to the Corleone Project");
 	      frame.pack();
 	      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	      frame.setVisible(true);
+	}
+	private static void initgameTimePane() {
+		gameTimePane = new JPanel();
+		gameTimePane.setBackground(Color.LIGHT_GRAY);
+		gameTimePaneLabel = new JLabel("0:00");				
+		gameTimePaneImage= new JLabel(new ImageIcon("images//gun.jpg"));
+		gameTimePane.add(gameTimePaneLabel);		
+		gameTimePane.add(Box.createHorizontalStrut(5));
+		gameTimePane.add(gameTimePaneImage);		
 	}
 	static int delay = 1000; //milliseconds
 	static ActionListener taskPerformer;
@@ -65,7 +82,7 @@ public class GUIFrame
 	private static void addProgressPane() 
 	{		
 		JPanel ProgressPane = new JPanel(new BorderLayout());
-		ProgressPane.setPreferredSize(new Dimension(780, 40));
+		ProgressPane.setPreferredSize(new Dimension(760, 76));
 		
 		timerLabel = new JLabel(" Time: "+minutes+":0"+seconds);
 		minutes=0;
@@ -89,36 +106,56 @@ public class GUIFrame
 	//	barPane.setPreferredSize(new Dimension(800, 400));
 		barPane.add(progBar);
 		barPane.setBackground(Color.LIGHT_GRAY);
-		ProgressPane.setBackground(Color.LIGHT_GRAY);
-		ProgressPane.add(Box.createVerticalStrut(5), BorderLayout.NORTH);
+		
+		JPanel tempPane = new JPanel(new BorderLayout());
+		tempPane.add(Box.createVerticalStrut(20), BorderLayout.NORTH);
+		tempPane.add(barPane, BorderLayout.CENTER);
+		tempPane.setBackground(Color.LIGHT_GRAY);
+				
+		ProgressPane.setBackground(Color.LIGHT_GRAY);		
 		ProgressPane.add(timerLabel, BorderLayout.WEST);
-		ProgressPane.add(barPane, BorderLayout.CENTER);		
+		ProgressPane.add(tempPane, BorderLayout.CENTER);		
+		ProgressPane.add(gameTimePane, BorderLayout.EAST);
 		frontPane.add(ProgressPane);
 		
 	}
+
 	private static void updateTime() 
 	{		
 		if(seconds<10)
 		{
-			timerLabel.setText(" Time: "+minutes+":0"+seconds);
+			timerLabel.setText("  Time: "+minutes+":0"+seconds);
 		}
 		else
 		{
-			timerLabel.setText(" Time: "+minutes+":"+seconds);
+			timerLabel.setText("  Time: "+minutes+":"+seconds);
 		}
+		
+		if(wseconds>10)
+			gameTimePaneLabel.setText(wminutes+":"+wseconds);
+		else
+			gameTimePaneLabel.setText(wminutes+":0"+wseconds);	
+		
 		seconds+=1;
 		if(seconds>=60)
 		{
 			minutes+=1;
 			seconds=0;
 		}
+		wseconds+=1;
+		if(wseconds>=60)
+		{
+			wminutes+=1;
+			wseconds=0;
+		}				
 	}
 	static int currentMinutesDisplayed = -1;
 	static int currentSecondsLeft = -1;
 	static int percentagePlayed;
 	static int intermission = 5;
+	
 	private static void updateProgressBar() 
-	{		
+	{				
 		if(MenuOpen)
 		{
 			if(timepane.getDayDuration()==0)
@@ -143,12 +180,14 @@ public class GUIFrame
 			
 			if(day==0 || day==2)
 			{
+				gameTimePaneImage.setIcon((new ImageIcon("images//gun.jpg")));
 				percentagePlayed=(int)((double)seconds/(intermission)*100);
 				progBar.setString("                         "+(intermission-seconds)+" seconds remaining.....                         ");
 				progBar.setValue(percentagePlayed);
 			}
 			if(day==1)
 			{	
+				gameTimePaneImage.setIcon((new ImageIcon("images//sun.gif")));
 				percentagePlayed=(int)((double)(seconds+minutes*60)/(daytime*60)*100);
 				if(currentMinutesDisplayed<10)
 				{														
@@ -161,6 +200,7 @@ public class GUIFrame
 			}
 			if(day==3)
 			{			
+				gameTimePaneImage.setIcon((new ImageIcon("images//moon.jpg")));
 				percentagePlayed=(int)((double)(seconds+minutes*60)/(nighttime*60)*100);
 				if(currentMinutesDisplayed<10)
 				{														
@@ -213,7 +253,7 @@ public class GUIFrame
 			     frame.pack();
 			     frame.setTitle("Time Options");
 			     frame.setLocation(x+170, y+170);
-			     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			     //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			     frame.setVisible(true);				
 			}			
 		  };
