@@ -1,8 +1,5 @@
 package com.googlecode.prmf.corleone.graphics;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 /*public class timePanel extends Panel {
     BufferedImage  image;
@@ -36,15 +33,15 @@ Exception {
 //Issam Bouter
 //Time panel for inputing time options for mafia game
 
-import java.awt.*;
-import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+//Issam Bouter
 //class to test time panel
+
 public class timePanel{
 	public static void main(String[] args) {		
 		
