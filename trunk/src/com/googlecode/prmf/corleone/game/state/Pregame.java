@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.googlecode.prmf.corleone.connection.IOThread;
 import com.googlecode.prmf.corleone.game.Game;
