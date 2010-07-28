@@ -119,18 +119,25 @@ public class Day implements MafiaGameState {
 		//TODO: change this to use the Class.forName() method. I think that's a much nicer solution than the one we have
 		//change this to be similar to Pregame's receiveMessage()
 		if( command.equals(":~lynch") )
-		{
-			ret = processVote(speakerId, targetId);
-			int e = players[speakerId].getexp() + 25;
-			inputOutputThread.sendMessage(players[speakerId].getName(), "You gained 25 exp from this action!");
-			players[speakerId].setexp(e);
-			if(players[speakerId].getexp() >= 100)
-			{	
-			   int tmp = players[speakerId].getlevel() + 1;
-			   players[speakerId].setlevel(tmp);
-			   inputOutputThread.sendMessage(players[speakerId].getName(), "Congratulations! You have leveled up!");
-			}  
-			
+		{ 
+		  if(players[speakerId].gettup() == false && players[targetId].getwind() == false)
+		  {	  
+			  ret = processVote(speakerId, targetId);
+			  int e = players[speakerId].getexp() + 25;
+			  inputOutputThread.sendMessage(players[speakerId].getName(), "You gained 25 exps from this action!");
+			  players[speakerId].setexp(e);
+			  if(players[speakerId].getexp() >= 100)
+			  {	
+			     int tmp = players[speakerId].getlevel() + 1;
+			     players[speakerId].setlevel(tmp);
+			     players[speakerId].setexp(0);
+			     inputOutputThread.sendMessage(players[speakerId].getName(), "Congratulations! You have leveled up! Note: Any superabundance experience points will be dropped after a game finished");
+			  }  
+		  }
+		  else
+		  {
+			     inputOutputThread.sendMessage(players[speakerId].getName(), "Your target: " + players[targetId].getName()+ "is protecting by a unknown extreme holy power........");
+		  }
 		}
 		else if( command.equals(":~nolynch") )
 		{
@@ -144,6 +151,22 @@ public class Day implements MafiaGameState {
 		else if (command.equals(":~states"))
 		{
 			inputOutputThread.sendMessage(players[speakerId].getName(), "You are: " + players[speakerId].getName() + " You current have: " + players[speakerId].getitems() + "items and " + players[speakerId].getap() + " action points!");
+		}
+		else if (command.equals(":~items"))
+		{
+			inputOutputThread.sendMessage(players[speakerId].getName(), "You have three items which can be used right now, some of them will become your powerful weapon, the other will be the solid shield. So use them wisely in order to win the game! For details about what is and how to use those items, please type: Command :~infor01 for first item; Command :~infor02 for first item; Command :~infor03 for first item;");
+		}
+		else if (command.equals(":~infor01"))
+		{
+			inputOutputThread.sendMessage(players[speakerId].getName(), "[Wind of Guardian Angel] >>> an item cost 60 action points to use; it can be used before the voting process, which means it can protect you from any voting kill in game. But the player has to determine to use it or not, you will have only one change during a game.");
+		}
+		else if (command.equals(":~infor02"))
+		{
+			inputOutputThread.sendMessage(players[speakerId].getName(),"[Gate of two worlds] >>> an item cost 60 action points to use; When the player died because of a voting process, and before the win/loss determination, that player can use this item to reenter the game. Note: if that player died because of quit command, he or she would not be able to use this item.");
+		}
+		else if (command.equals(":~infor03"))
+		{
+			inputOutputThread.sendMessage(players[speakerId].getName(), "[Unbeatable power] >>> an item cost 60 action points to use. It can be used before the voting process, and it can ignore the effect of “Wind of Guardian Angel”, and still can let that target player be killed. Note: the game still need majority voted here.");
 		}
 		else if( command.equals(":~quit") )
 		{

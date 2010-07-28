@@ -32,6 +32,8 @@ public class Player {
 	private int actionpoint;
 	private int exp;
 	private boolean targetted;
+	private boolean targettedup;
+	private boolean targettedwind;
 	private causesOfDeath deathCause;
 
 	public Player(String name) {
@@ -43,6 +45,8 @@ public class Player {
 		items = 3;
 		exp = 0;
 		actionpoint = 180;
+		targettedup = false;
+		targettedwind = false;
 		targetted = false;
 		deathCause = causesOfDeath.NOTDEAD;
 	}
@@ -110,6 +114,26 @@ public class Player {
 	public void setexp(int exp)
 	{
 		this.exp = exp;
+	}
+	
+	public boolean gettup()
+	{
+		return this.targettedup;
+	}
+	
+	public void settup(boolean t)
+	{
+		this.targettedup = t;
+	}
+	
+	public boolean getwind()
+	{
+		return this.targettedwind;
+	}
+	
+	public void setwind(boolean t)
+	{
+		this.targettedwind = t;
 	}
 	
 	// -----------------------------------------------------------------------------------------------------
