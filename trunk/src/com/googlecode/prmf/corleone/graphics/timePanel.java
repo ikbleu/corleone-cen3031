@@ -1,7 +1,43 @@
+package com.googlecode.prmf.corleone.graphics;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+/*public class timePanel extends Panel {
+    BufferedImage  image;
+  public timePanel() {
+    try {
+  System.out.println("Enter image name\n");
+  BufferedReader bf=new BufferedReader(new 
+InputStreamReader(System.in));
+   String imageName=bf.readLine();
+  File input = new File(imageName);
+      image = ImageIO.read(input);
+    } catch (IOException ie) {
+      System.out.println("Error:"+ie.getMessage());
+    }
+  }
+
+  public void paint(Graphics g) {
+    g.drawImage( image, 0, 0, null);
+  }
+
+  static public void main(String args[]) throws
+Exception {
+    JFrame frame = new JFrame("Display image");
+    Panel panel = new timePanel();
+    frame.getContentPane().add(panel);
+    frame.setSize(500, 500);
+    frame.setVisible(true);
+  }
+}
+*/
 //Issam Bouter
 //Time panel for inputing time options for mafia game
-package com.googlecode.prmf.corleone.GUI;
+
 import java.awt.*;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,8 +51,17 @@ public class timePanel{
       JFrame frame = new JFrame();
       Container cp = frame.getContentPane();
       timeDurationPanel pane = new timeDurationPanel(frame, 8, 10);
-      cp.add(pane.getPanel());
-
+      //cp.add(pane.getPanel());
+      JPanel test=new JPanel();
+      test.add(new JLabel("hi"));
+      ImageIcon img=new ImageIcon("images // haha.jpeg");      
+      System.out.println("HERE" +img.getIconWidth()+img.getDescription());
+      //test.add(new JLabel(new ImageIcon("images/test.png")));
+      test.add(new JLabel(img));
+      test.repaint();
+      test.add(new JLabel("hi"));     
+      //cp.add(new JScrollPane());
+      cp.add(test);
       frame.pack();
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.setVisible(true);
@@ -28,7 +73,7 @@ class timeDurationPanel
 	static int maxNightDuration = 30;
 	static int maxDayDuration = 60;
 	int dayTime, nightTime;	
-	JFrame frame;
+	JFrame frame;	
 	
 	//constructos
 	public timeDurationPanel(JFrame Pframe, int daytime2, int nighttime2)
@@ -56,10 +101,10 @@ class timeDurationPanel
 		final JLabel dayLabel = new JLabel(Integer.toString(daySlider.getValue())+" minutes");
 		ChangeListener daySliderListener = new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				if(daySlider.getValue()>9)
+				//if(daySlider.getValue()>9)
 					dayLabel.setText(Integer.toString(daySlider.getValue())+" minutes");
-				else
-					dayLabel.setText("0"+Integer.toString(daySlider.getValue())+" minutes");
+				//else
+				//	dayLabel.setText("0"+Integer.toString(daySlider.getValue())+" minutes");
 			}			
 		};		
 		daySlider.addChangeListener(daySliderListener);				
@@ -79,10 +124,10 @@ class timeDurationPanel
 		final JLabel nightLabel = new JLabel(Integer.toString(nightSlider.getValue())+" minutes");
 		ChangeListener nightSliderListener = new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				if(nightSlider.getValue()>9)
+				//if(nightSlider.getValue()>9)
 					nightLabel.setText(Integer.toString(nightSlider.getValue())+" minutes");
-				else
-					nightLabel.setText("0"+Integer.toString(nightSlider.getValue())+" minutes");
+				//else
+				//	nightLabel.setText("0"+Integer.toString(nightSlider.getValue())+" minutes");
 			}			
 		};		
 		nightSlider.addChangeListener(nightSliderListener);
