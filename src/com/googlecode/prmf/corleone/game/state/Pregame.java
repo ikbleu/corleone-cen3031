@@ -109,7 +109,7 @@ public class Pregame implements MafiaGameState {
 		//TODO: handle with Class.forName(), although I'm not sure how case sensitivity will work with that? =\
 		//then we can catch class not found exceptions with a message telling user to see ~help or something
 		if(command.equalsIgnoreCase(":~start"))
-		{	
+		{
 			if(setupChosen==true&&System.currentTimeMillis()>timer){
 				endState=true;
 				action= new StartAction(user, game);

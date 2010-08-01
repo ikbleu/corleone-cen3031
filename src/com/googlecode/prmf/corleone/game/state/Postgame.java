@@ -57,6 +57,12 @@ public class Postgame implements MafiaGameState {
 
 	public void status()
 	{
+		for(int i = 0; i < players.length; i++)
+		{
+			players[i].setap(180);
+			players[i].settup(false);
+			players[i].setwind(false);
+		}
 		inputOutputThread.sendMessage(inputOutputThread.getChannel(), "The game is now over");
 	}
 
