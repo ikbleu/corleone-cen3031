@@ -240,7 +240,7 @@ public class Day implements MafiaGameState {
 	}
 
 	public void status() {
-		inputOutputThread.sendMessage(inputOutputThread.getChannel(), "It is now day!");
+		inputOutputThread.sendMessage(inputOutputThread.getChannel(), "It is now day! Notice: you can only use your item during day time");
 		
 		for(int i = 0; i < players.length; i++)
 		{
