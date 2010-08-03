@@ -136,7 +136,7 @@ public class Day implements MafiaGameState {
 		  }
 		  else
 		  {
-			     inputOutputThread.sendMessage(players[speakerId].getName(), "Your target: " + players[targetId].getName()+ "is protecting by a unknown extreme holy power........lynch failure");
+			     inputOutputThread.sendMessage(players[speakerId].getName(), "Your target: " + players[targetId].getName()+ " is protecting by a unknown extreme holy power........lynch failure");
 			     ret = -3;
 		  }
 		}
