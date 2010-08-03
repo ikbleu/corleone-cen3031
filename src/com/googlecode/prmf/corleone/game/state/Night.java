@@ -23,11 +23,17 @@ public class Night implements MafiaGameState
 {
 	private Player[] players;
 	private IOThread inputOutputThread;
+	private String storyMode = "quaint";
+	private String cusKil;
+	private String cusLyn;
 
-	public Night(Player[] players, IOThread inputOutputThread)
+	public Night(Player[] players, IOThread inputOutputThread, String storyMode, String cusLyn, String cusKil)
 	{
 		this.players = players;
 		this.inputOutputThread = inputOutputThread;
+		this.storyMode = storyMode;
+		this.cusKil = cusKil;
+		this.cusLyn = cusLyn;
 	}
 
 	//	TODO add a timer to night
@@ -149,7 +155,18 @@ public class Night implements MafiaGameState
 			}
 			if (p.getNightLives() < 0)
 			{
-				inputOutputThread.sendMessage(inputOutputThread.getChannel(), p + " was killed during the night!");
+				if(storyMode.equals("quaint")){
+					inputOutputThread.sendMessage(inputOutputThread.getChannel(), p + " was quaintly killed during the night!");
+				}
+				else if(storyMode.equals("harsh")){
+					inputOutputThread.sendMessage(inputOutputThread.getChannel(), p + " was harshly killed during the night!");
+				}
+				else if(storyMode.equals("brutal")){
+					inputOutputThread.sendMessage(inputOutputThread.getChannel(), p + " was brutally killed during the night!");
+				}
+				else{
+					inputOutputThread.sendMessage(inputOutputThread.getChannel(), p + cusKil);
+				}
 			}
 		}
 	}
@@ -176,7 +193,7 @@ public class Night implements MafiaGameState
 			if(p.isAlive())
 				inputOutputThread.sendMessage("MODE",inputOutputThread.getChannel(), "+v "+p.getName());
 		}
-		game.setState(new Day(players, inputOutputThread));
+		game.setState(new Day(players, inputOutputThread, storyMode, cusLyn, cusKil));
 
 		if(!game.isOver())
 			game.startTimer();

@@ -27,13 +27,19 @@ public class Day implements MafiaGameState {
 	boolean killed; // if anyone was killed the previous night
 	String dead; // who was killed , if anyone;
 	IOThread inputOutputThread;
+	private String storyMode = "quaint";
+	private String cusKil;
+	private String cusLyn;
 	//TODO: Day, and other classes, have inputOutputThreads, inputThreads, and IOThreads. we need to pick a name and keep it
 	//TODO better yet, they shouldn't all keep a reference to it if you ask me
 
-	public Day(Player[] players, IOThread inputThread) {
+	public Day(Player[] players, IOThread inputThread, String storyMode, String cusLyn, String cusKil) {
 		tracker = new VoteTracker(players);
 		this.players = players;
 		this.inputOutputThread = inputThread;
+		this.storyMode = storyMode;
+		this.cusKil = cusKil;
+		this.cusLyn = cusLyn;
 	}
 	public boolean receiveMessage(Game game, String line) {
 		boolean ret = false;
@@ -49,7 +55,19 @@ public class Day implements MafiaGameState {
 		int returnCode = parseMessage(line, speaker);
 		//TODO why do we have this part in a separate method? =\
 		if(returnCode >= 0) {
-			inputOutputThread.sendMessage(inputOutputThread.getChannel(), players[returnCode] + " was lynched :(");
+			//String playerRepl;
+			if(storyMode.equals("quaint")){
+				inputOutputThread.sendMessage(inputOutputThread.getChannel(), players[returnCode] + " was quaintly lynched :(");
+			}
+			else if(storyMode.equals("harsh")){
+				inputOutputThread.sendMessage(inputOutputThread.getChannel(), players[returnCode] + " was harshly lynched :(");
+			}
+			else if(storyMode.equals("brutal")){
+				inputOutputThread.sendMessage(inputOutputThread.getChannel(), players[returnCode] + " was brutally lynched :(");
+			}
+			else if(storyMode.equals("custom")){
+				inputOutputThread.sendMessage(inputOutputThread.getChannel(), players[returnCode] + cusLyn);
+			}
 			players[returnCode].setAlive(false);
 			players[returnCode].setCauseOfDeath(Player.causesOfDeath.LYNCH);
 			ret = true;
@@ -324,7 +342,7 @@ public class Day implements MafiaGameState {
 
 	public void endState(Game game)
 	{
-		game.setState(new Night(players, inputOutputThread));
+		game.setState(new Night(players, inputOutputThread, storyMode, cusLyn, cusKil));
 		for(Player p : game.getPlayerList())
 		{
 			//unvoice the players since NO TALKING DURING THE NIGHT
