@@ -51,6 +51,9 @@ public class Pregame implements MafiaGameState {
 	private int votes1=0, votes2=0, votes3=0;//new
 	private long timer;
 	private boolean setupChosen = false;
+	private String storyMode = "quaint";
+	private String cusKil = "was killed customly";
+	private String cusLyn = "was lynched customly";
 	
 	public Pregame(String startName, IOThread inputOutputThread) {
 		this();
@@ -136,12 +139,48 @@ public class Pregame implements MafiaGameState {
 			setupChosen=true;
 			setupMenu();
 		}
+		if(command.equalsIgnoreCase(":~quaint"))//new
+		{
+			storyMode = "quaint";
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You've selected the story mode: quaint");
+		}
+		if(command.equalsIgnoreCase(":~harsh"))//new
+		{
+			storyMode = "harsh";
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You've selected the story mode: harsh");
+		}
+		if(command.equalsIgnoreCase(":~brutal"))//new
+		{
+			storyMode = "brutal";
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You've selected the story mode: brutal");
+		}
+		if(command.equalsIgnoreCase(":~custom"))//new
+		{
+			storyMode = "custom";
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You've selected the story mode: custom");
+		}
+		if(command.equalsIgnoreCase(":~ckil"))//new
+		{
+			String temp = "";
+			for(int i = 4; i < msg.length; ++i){
+				temp += " " + msg[i];
+			}
+			cusKil = temp;
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You're custom Kill message is \"[Player] " + cusKil + "\"");
+		}
+		if(command.equalsIgnoreCase(":~clyn"))//new
+		{
+			String temp = "";
+			for(int i = 4; i < msg.length; ++i){
+				temp += " " + msg[i];
+			}
+			cusLyn = temp;
+			inputOutputThread.sendMessage(inputOutputThread.getChannel(), "You're custom Lynch message is \"[Player] " + cusLyn + "\"");
+		}
 		if(command.equalsIgnoreCase(":~opt1"))//new
 		{
 			//setupOp=1;
 			votes1++;
-			
-
 		}
 		if(command.equalsIgnoreCase(":~opt2"))//new
 		{
@@ -500,7 +539,7 @@ public class Pregame implements MafiaGameState {
 						if(p.isAlive())
 							inputOutputThread.sendMessage("MODE",inputOutputThread.getChannel(), "+v "+p.getName());
 					}
-					game.setState(new Day(getPlayerArray(), inputOutputThread));
+					game.setState(new Day(getPlayerArray(), inputOutputThread, storyMode, cusLyn, cusKil));
 				}
 				else
 				{
@@ -508,7 +547,7 @@ public class Pregame implements MafiaGameState {
 					{
 						inputOutputThread.sendMessage("MODE",inputOutputThread.getChannel(), "-v "+p.getName());
 					}
-					game.setState(new Night(getPlayerArray(), inputOutputThread));
+					game.setState(new Night(getPlayerArray(), inputOutputThread, storyMode, cusLyn, cusKil));
 				}
 				game.startTimer();
 			}

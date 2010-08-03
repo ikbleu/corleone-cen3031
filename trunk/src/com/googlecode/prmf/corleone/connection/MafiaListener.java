@@ -30,7 +30,7 @@ public class MafiaListener implements Listener {
 	// TODO: need to clean this massive pile of if/else up
 	@Override
 	public void receiveLine(String in, IOThread inputThread) {
-		String[] msg = in.split(" ", 4);
+		String[] msg = in.split(" ");
 		String user = "";
 		if(msg[0].indexOf("!") > 1)
 			user = msg[0].substring(1,msg[0].indexOf("!"));
@@ -71,7 +71,30 @@ public class MafiaListener implements Listener {
 		{
 			game.receiveMessage(in);
 		}
-		
+		else if(msg.length >= 4 && msg[3].equals(":~quaint") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~harsh") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~brutal") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~custom") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~ckil") && game != null)
+		{
+			game.receiveMessage(in);
+		}
+		else if(msg.length >= 4 && msg[3].equals(":~clyn") && game != null)
+		{
+			game.receiveMessage(in);
+		}
 		else if(msg.length >= 4 && msg[3].equals(":~stats") && game != null)
 		{
 			game.getState().status();
